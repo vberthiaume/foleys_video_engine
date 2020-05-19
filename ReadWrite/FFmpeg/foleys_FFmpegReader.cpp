@@ -79,12 +79,17 @@ public:
             reader.pixelFormat  = videoContext->pix_fmt;
             reader.timebase     = stream->time_base.num > 0 ? double (stream->time_base.den) / stream->time_base.num : AV_TIME_BASE;
 
+#if JUCE_ANDROID
+            auto outputFormat = AV_PIX_FMT_RGB0;
+#else
+            auto outputFormat = AV_PIX_FMT_BGR0;
+#endif
             scaler.setupScaler (videoContext->width,
                                 videoContext->height,
                                 videoContext->pix_fmt,
                                 videoContext->width,
                                 videoContext->height,
-                                AV_PIX_FMT_BGR0);
+                                outputFormat);
 
         }
 
