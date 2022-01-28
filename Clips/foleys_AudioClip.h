@@ -50,9 +50,9 @@ public:
 
     void setAudioFormatReader (juce::AudioFormatReader* reader, int samplesToBuffer = 48000);
 
-    std::pair<int64_t, juce::Image> getFrame (double pts) const override { return {}; }
+    std::pair<int64_t, juce::Image> getFrame (double /*pts*/) const override { return {}; }
     juce::Image getCurrentFrame() const override  { return {}; }
-    bool isFrameAvailable (double pts) const override { return false; }
+    bool isFrameAvailable (double /*pts*/) const override { return false; }
 
     Size getVideoSize() const override  { return {}; }
     double getCurrentTimeInSeconds() const override;
@@ -65,9 +65,9 @@ public:
     juce::int64 getNextReadPosition() const override;
     juce::int64 getTotalLength() const override;
     bool isLooping() const override { return false; }
-    void setLooping (bool shouldLoop) override {}
+    void setLooping (bool /*shouldLoop*/) override {}
 
-    juce::Image getStillImage (double seconds, Size size) override { return {}; }
+    juce::Image getStillImage (double /*seconds*/, Size /*size*/) override { return {}; }
 
     double getLengthInSeconds() const override;
 

@@ -119,7 +119,7 @@ juce::ThreadPoolJob::JobStatus AudioStrip::ThumbnailJob::runJob()
 {
     const auto        sampleRate = 48000.0;
     const auto        blockSize  = 2048;
-    const juce::int64 length = (owner.startTime + owner.endTime) * sampleRate;
+    const juce::int64 length = (juce::int64)((owner.startTime + owner.endTime) * sampleRate);
     juce::int64       pos = 0;
 
     if (shouldExit())

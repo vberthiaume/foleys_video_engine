@@ -122,7 +122,7 @@ void AudioClip::getNextAudioBlock (const juce::AudioSourceChannelInfo& info)
     else
         info.clearActiveBufferRegion();
 
-    info.buffer->applyGainRamp (info.startSample, info.numSamples, lastGain, gain);
+    info.buffer->applyGainRamp (info.startSample, info.numSamples, (float)lastGain, (float)gain);
     lastGain = gain;
 }
 
@@ -131,7 +131,7 @@ void AudioClip::setNextReadPosition (juce::int64 samples)
     if (readerSource)
     {
         if (sampleRate > 0 && originalSampleRate != sampleRate)
-            readerSource->setNextReadPosition (samples * originalSampleRate / sampleRate);
+            readerSource->setNextReadPosition ((int64_t)(samples * originalSampleRate / sampleRate));
         else
             readerSource->setNextReadPosition (samples);
     }
@@ -142,7 +142,7 @@ juce::int64 AudioClip::getNextReadPosition() const
     if (readerSource)
     {
         if (originalSampleRate > 0 && sampleRate != originalSampleRate)
-            return readerSource->getNextReadPosition() * sampleRate / originalSampleRate;
+            return (int64_t)(readerSource->getNextReadPosition() * sampleRate / originalSampleRate);
 
         return readerSource->getNextReadPosition();
     }
@@ -155,7 +155,7 @@ juce::int64 AudioClip::getTotalLength() const
     if (readerSource)
     {
         if (originalSampleRate > 0 && sampleRate != originalSampleRate)
-            return readerSource->getTotalLength() * sampleRate / originalSampleRate;
+            return (int64_t)(readerSource->getTotalLength() * sampleRate / originalSampleRate);
 
         return readerSource->getTotalLength();
     }

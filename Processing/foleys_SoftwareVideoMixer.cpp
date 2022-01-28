@@ -83,11 +83,11 @@ void SoftwareVideoMixer::compose (juce::Image&        target,
         juce::Graphics::ScopedSaveState save (g);
         auto posX = (settings.frameSize.width - w) * 0.5 + transX * w;
         auto posY = (settings.frameSize.height - h)  * 0.5 - transY * h;
-        g.setOpacity (alpha);
+        g.setOpacity ((float)alpha);
         if (rotation != 0)
-            g.addTransform (juce::AffineTransform::rotation (rotation * juce::MathConstants<float>::pi / 180.0f, posX + w * 0.5, posY + h * 0.5));
+            g.addTransform (juce::AffineTransform::rotation ((float)(rotation * juce::MathConstants<float>::pi / 180.0f), (float)(posX + w * 0.5), (float)(posY + h * 0.5f)));
 
-        g.drawImageWithin (frame, posX, posY, w, h, juce::RectanglePlacement (juce::RectanglePlacement::centred));
+        g.drawImageWithin (frame, (int)posX, (int)posY, (int)w, (int)h, juce::RectanglePlacement (juce::RectanglePlacement::centred));
     }
 }
 

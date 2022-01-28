@@ -117,7 +117,7 @@ juce::ThreadPoolJob::JobStatus UsageReporter::runJob()
 FoleysSplashScreen::FoleysSplashScreen()
 {
     setOpaque (false);
-    static const unsigned char logo[] =
+    static const unsigned char theLogo[] =
     "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\" \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n"
     "<svg version=\"1.0\" xmlns=\"http://www.w3.org/2000/svg\" width=\"472px\" height=\"469px\" viewBox=\"0 0 4720 4690\" preserveAspectRatio=\"xMidYMid meet\">\n"
     "<g id=\"layer101\" fill=\"#4b3427\" stroke=\"none\">\n"
@@ -133,7 +133,7 @@ FoleysSplashScreen::FoleysSplashScreen()
     "\n"
     "</svg>\n";
 
-    foleys = juce::Drawable::createFromImageData (logo, 1456);
+    foleys = juce::Drawable::createFromImageData (theLogo, 1456);
 
     juce::Timer::callAfterDelay (6000, [this] { setVisible (false); } );
 }

@@ -86,8 +86,9 @@ struct FFmpegWriter::Pimpl
             av_opt_set (context->priv_data, "profile", "baseline", AV_OPT_SEARCH_CHILDREN);
         }
 
-        if (formatContext->oformat->flags & AVFMT_GLOBALHEADER)
-            context->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
+        // These lines are commented out to fix the issue where exported mp4 files were missing a header and would only playback in VLC
+//        if (formatContext->oformat->flags & AVFMT_GLOBALHEADER)
+//            context->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
         int ret = avcodec_open2 (context, encoder, &options);
         if (ret < 0) {
@@ -295,14 +296,14 @@ struct FFmpegWriter::Pimpl
             }
             else
             {
-                auto descriptor = std::find_if (audioStreams.begin(), audioStreams.end(), [idx](const auto& descriptor) { return descriptor->streamIndex == idx; });
-                if (descriptor != audioStreams.end())
+                auto theDescriptor = std::find_if (audioStreams.begin(), audioStreams.end(), [idx](const auto& descriptor) { return descriptor->streamIndex == idx; });
+                if (theDescriptor != audioStreams.end())
                 {
-                    auto* context = (*descriptor)->context;
+                    auto* context = (*theDescriptor)->context;
                     if (context->codec != nullptr && context->codec->capabilities & AV_CODEC_CAP_DELAY)
                     {
                         FOLEYS_LOG ("Flushing audio encoder stream " << idx);
-                        while (encodeWriteFrame (context, nullptr, (*descriptor)->streamIndex));
+                        while (encodeWriteFrame (context, nullptr, (*theDescriptor)->streamIndex));
                     }
                 }
             }
@@ -444,7 +445,9 @@ private:
         }
 
         if (av_interleaved_write_frame (formatContext, packet) < 0)
+        {
             FOLEYS_LOG ("Error muxing packet");
+        }
 
         av_packet_unref (packet);
 

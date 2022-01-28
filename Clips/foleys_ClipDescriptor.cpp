@@ -186,7 +186,7 @@ void ClipDescriptor::notifyParameterAutomationChange (const ParameterAutomation*
 }
 
 void ClipDescriptor::valueTreePropertyChanged (juce::ValueTree& treeWhosePropertyHasChanged,
-                                                             const juce::Identifier& property)
+                                                             const juce::Identifier& /*property*/)
 {
     if (treeWhosePropertyHasChanged != state)
         return;
@@ -210,7 +210,7 @@ void ClipDescriptor::valueTreeChildAdded (juce::ValueTree& parentTree,
 }
 
 void ClipDescriptor::valueTreeChildRemoved (juce::ValueTree& parentTree,
-                                            juce::ValueTree& childWhichHasBeenRemoved,
+                                            juce::ValueTree& /*childWhichHasBeenRemoved*/,
                                             int indexFromWhichChildWasRemoved)
 {
     if (manualStateChange)
@@ -227,9 +227,9 @@ void ClipDescriptor::updateSampleCounts()
 {
     auto sampleRate = clip->getSampleRate();
 
-    start = sampleRate * double (state.getProperty (IDs::start));
-    length = sampleRate * double (state.getProperty (IDs::length));
-    offset = sampleRate * double (state.getProperty (IDs::offset));
+    start = (int64_t)(sampleRate * double (state.getProperty (IDs::start)));
+    length = (int64_t) (sampleRate * double (state.getProperty (IDs::length)));
+    offset = (int64_t) (sampleRate * double (state.getProperty (IDs::offset)));
 }
 
 ClipDescriptor::ClipParameterController& ClipDescriptor::getAudioParameterController()

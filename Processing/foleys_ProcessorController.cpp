@@ -193,7 +193,7 @@ ProcessorController::ProcessorController (ClipDescriptor& ownerToUse,
 }
 
 ProcessorController::ProcessorController (ClipDescriptor& ownerToUse,
-                                          const juce::ValueTree& stateToUse, int index)
+                                          const juce::ValueTree& stateToUse, int /*index*/)
 : owner (ownerToUse)
 {
     state = stateToUse;

@@ -188,7 +188,7 @@ public:
                             AV_PIX_FMT_BGR0);
 
         auto targetPts = seconds * reader.timebase;
-        auto response = av_seek_frame (formatContext, videoStreamIdx, targetPts, AVSEEK_FLAG_BACKWARD);
+        auto response = av_seek_frame (formatContext, videoStreamIdx, (int64_t)targetPts, AVSEEK_FLAG_BACKWARD);
         if (response < 0)
         {
             FOLEYS_LOG ("Error seeking in video stream: " << getErrorString (response));
@@ -233,8 +233,8 @@ public:
         if (audioContext == nullptr)
         {
             if (juce::isPositiveAndBelow (videoStreamIdx, formatContext->nb_streams))
-                reader.numSamples  = formatContext->streams [videoStreamIdx]->duration * sr
-                * av_q2d (formatContext->streams [videoStreamIdx]->time_base);
+                reader.numSamples  = (int64_t)(formatContext->streams [videoStreamIdx]->duration * sr
+                                * av_q2d (formatContext->streams [videoStreamIdx]->time_base));
 
             return false;
         }
@@ -242,7 +242,7 @@ public:
         audioConverterContext = swr_alloc_set_opts (audioConverterContext,
                                                     channelLayout,              // out_ch_layout
                                                     AV_SAMPLE_FMT_FLTP,         // out_sample_fmt
-                                                    sr,                         // out_sample_rate
+                                                    (int)sr,                    // out_sample_rate
                                                     channelLayout,              // in_ch_layout
                                                     audioContext->sample_fmt,   // in_sample_fmt
                                                     audioContext->sample_rate,  // in_sample_rate
@@ -378,9 +378,9 @@ private:
             if (frame->extended_data != nullptr  && reader.sampleRate > 0)
             {
                 const int  channels     = av_get_channel_layout_nb_channels (frame->channel_layout);
-                const auto numSamples   = frame->nb_samples;
+                const auto theNumSamples   = frame->nb_samples;
                 const auto outTimestamp = int64_t (frame->best_effort_timestamp * outputSampleRate / reader.sampleRate);
-                const auto numProduced  = int (numSamples * outputSampleRate / reader.sampleRate);
+                const auto numProduced  = int (theNumSamples * outputSampleRate / reader.sampleRate);
 
                 jassert (std::abs (audioFifo.getWritePosition() - outTimestamp) < std::numeric_limits<int>::max());
                 auto offset = int (audioFifo.getWritePosition() - outTimestamp);
@@ -405,7 +405,7 @@ private:
                 {
                     swr_convert (audioConverterContext,
                                  (uint8_t**)audioConvertBuffer.getArrayOfWritePointers(), numProduced,
-                                 (const uint8_t**)frame->extended_data, numSamples);
+                                 (const uint8_t**)frame->extended_data, theNumSamples);
                     juce::AudioBuffer<float> buffer (audioConvertBuffer.getArrayOfWritePointers(), channels, int (offset), int (numProduced - offset));
                     audioFifo.pushSamples (buffer);
                 }
@@ -493,9 +493,9 @@ void FFmpegReader::readNewData (VideoFifo& videoFifo, AudioFifo& audioFifo)
     pimpl->processPacket (videoFifo, audioFifo);
 }
 
-void FFmpegReader::setOutputSampleRate (double sampleRate)
+void FFmpegReader::setOutputSampleRate (double theSampleRate)
 {
-    pimpl->setOutputSampleRate (sampleRate);
+    pimpl->setOutputSampleRate (theSampleRate);
 }
 
 bool FFmpegReader::hasVideo() const

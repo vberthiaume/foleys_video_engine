@@ -46,7 +46,7 @@ void FilmStrip::setClip (std::shared_ptr<AVClip> clipToUse)
 void FilmStrip::paint (juce::Graphics& g)
 {
     g.fillAll (juce::Colours::black);
-    auto target = getLocalBounds().withWidth (getHeight() * aspectRatio);
+    auto target = getLocalBounds().withWidth ((int)(getHeight() * aspectRatio));
     for (auto& image : thumbnails)
     {
         g.drawImage (image, target.toFloat());

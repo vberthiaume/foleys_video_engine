@@ -112,10 +112,10 @@ public:
                                 juce::ValueTree& childWhichHasBeenRemoved,
                                 int indexFromWhichChildWasRemoved) override;
 
-    void valueTreeChildOrderChanged (juce::ValueTree& parentTreeWhoseChildrenHaveMoved,
-                                     int oldIndex, int newIndex) override {}
+    void valueTreeChildOrderChanged (juce::ValueTree& /*parentTreeWhoseChildrenHaveMoved*/,
+                                     int /*oldIndex*/, int /*newIndex*/) override {}
 
-    void valueTreeParentChanged (juce::ValueTree& treeWhoseParentHasChanged) override {}
+    void valueTreeParentChanged (juce::ValueTree& /*treeWhoseParentHasChanged*/) override {}
 
     juce::UndoManager* getUndoManager();
 

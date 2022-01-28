@@ -138,7 +138,7 @@ double ComposedClip::getCurrentTimeInSeconds() const
     return convertToSamples (position.load());
 }
 
-juce::Image ComposedClip::getStillImage (double seconds, Size size)
+juce::Image ComposedClip::getStillImage (double /*seconds*/, Size /*size*/)
 {
     // TODO
     return {};
@@ -151,7 +151,7 @@ double ComposedClip::getLengthInSeconds() const
 
 void ComposedClip::prepareToPlay (int samplesPerBlockExpected, double sampleRateToUse)
 {
-    audioSettings.timebase = sampleRateToUse;
+    audioSettings.timebase = (int)sampleRateToUse;
     audioSettings.defaultNumSamples = samplesPerBlockExpected;
 
     audioMixer->setup (audioSettings.numChannels, audioSettings.timebase, audioSettings.defaultNumSamples);
@@ -258,7 +258,7 @@ bool ComposedClip::hasAudio() const
     return hasAudio;
 }
 
-std::shared_ptr<AVClip> ComposedClip::createCopy (StreamTypes types)
+std::shared_ptr<AVClip> ComposedClip::createCopy (StreamTypes /*types*/)
 {
     auto* engine = getVideoEngine();
     if (engine == nullptr)
@@ -306,12 +306,12 @@ double ComposedClip::convertToSamples (int64_t pos) const
     return {};
 }
 
-void ComposedClip::valueTreePropertyChanged (juce::ValueTree& treeWhosePropertyHasChanged,
-                                             const juce::Identifier& property)
+void ComposedClip::valueTreePropertyChanged (juce::ValueTree& /*treeWhosePropertyHasChanged*/,
+                                             const juce::Identifier& /*property*/)
 {
 }
 
-void ComposedClip::valueTreeChildAdded (juce::ValueTree& parentTree,
+void ComposedClip::valueTreeChildAdded (juce::ValueTree& /*parentTree*/,
                                         juce::ValueTree& childWhichHasBeenAdded)
 {
     if (manualStateChange)
@@ -331,9 +331,9 @@ void ComposedClip::valueTreeChildAdded (juce::ValueTree& parentTree,
     }
 }
 
-void ComposedClip::valueTreeChildRemoved (juce::ValueTree& parentTree,
+void ComposedClip::valueTreeChildRemoved (juce::ValueTree& /*parentTree*/,
                                           juce::ValueTree& childWhichHasBeenRemoved,
-                                          int indexFromWhichChildWasRemoved)
+                                          int /*indexFromWhichChildWasRemoved*/)
 {
     if (manualStateChange)
         return;

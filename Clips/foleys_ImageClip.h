@@ -50,7 +50,7 @@ public:
 
     std::pair<int64_t, juce::Image> getFrame (double pts) const override;
     juce::Image getCurrentFrame() const override;
-    bool isFrameAvailable (double pts) const override { return image.isValid(); }
+    bool isFrameAvailable (double /*pts*/) const override { return image.isValid(); }
 
     Size getVideoSize() const override;
     double getCurrentTimeInSeconds() const override;

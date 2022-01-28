@@ -82,7 +82,7 @@ void MovieClip::setReader (std::unique_ptr<AVReader> readerToUse)
         movieReader->setOutputSampleRate (sampleRate);
 
     auto& settings = videoFifo.getVideoSettings();
-    settings.timebase = movieReader->timebase;
+    settings.timebase = (int)movieReader->timebase;
     settings.frameSize = movieReader->originalSize;
     videoFifo.clear();
 
@@ -141,10 +141,10 @@ juce::Image MovieClip::getCurrentFrame() const
     return videoFifo.getVideoFrame (nextReadPosition / sampleRate).second;
 }
 
-void MovieClip::prepareToPlay (int samplesPerBlockExpected, double sampleRateToUse)
+void MovieClip::prepareToPlay (int /*samplesPerBlockExpected*/, double sampleRateToUse)
 {
     sampleRate = sampleRateToUse;
-    audioFifo.setNumSamples (sampleRate);
+    audioFifo.setNumSamples ((int)sampleRate);
     audioFifo.setSampleRate (sampleRate);
 
     if (movieReader)
@@ -164,7 +164,7 @@ bool MovieClip::waitForSamplesReady (int samples, int timeout)
     {
         const auto start = juce::Time::getMillisecondCounter();
 
-        while (audioFifo.getAvailableSamples() < samples && juce::Time::getMillisecondCounter() - start < timeout)
+        while (audioFifo.getAvailableSamples() < samples && juce::Time::getMillisecondCounter() - start < (uint32_t)timeout)
             juce::Thread::sleep (5);
 
         return audioFifo.getAvailableSamples() >= samples;
@@ -179,7 +179,7 @@ bool MovieClip::waitForFrameReady (double pts, int timeout)
 {
     const auto start = juce::Time::getMillisecondCounter();
 
-    while (videoFifo.isFrameAvailable (pts) == false && juce::Time::getMillisecondCounter() - start < timeout)
+    while (videoFifo.isFrameAvailable (pts) == false && juce::Time::getMillisecondCounter() - start < (uint32_t)timeout)
         juce::Thread::sleep (3);
 
     return videoFifo.isFrameAvailable (pts);
@@ -192,7 +192,7 @@ void MovieClip::getNextAudioBlock (const juce::AudioSourceChannelInfo& info)
     if (movieReader && movieReader->isOpenedOk() && movieReader->hasAudio())
     {
         audioFifo.pullSamples (info);
-        info.buffer->applyGainRamp (info.startSample, info.numSamples, lastGain, gain);
+        info.buffer->applyGainRamp (info.startSample, info.numSamples, (float)lastGain, (float)gain);
     }
     else
     {
@@ -257,7 +257,7 @@ void MovieClip::setNextReadPosition (juce::int64 samples)
         }
         else
         {
-            movieReader->setPosition (time * movieReader->sampleRate);
+            movieReader->setPosition ((int64_t)(time * movieReader->sampleRate));
         }
         videoFifo.clear();
     }
