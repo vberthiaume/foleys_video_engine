@@ -148,7 +148,7 @@ double ParameterAutomation::getPreviousKeyframeTime (double time) const
 
 double ParameterAutomation::getNextKeyframeTime (double time) const
 {
-    auto& next = keyframes.upper_bound (time);
+    auto next = keyframes.upper_bound (time);
     if (next == keyframes.end())
         return time;
 
